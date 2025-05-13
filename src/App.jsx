@@ -6,8 +6,8 @@ import { AuthProvider } from "./context/AuthContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+// import Login from "./pages/Login";
+// import Signup from "./pages/Signup";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import AdminPanel from "./pages/AdminPanel";
@@ -38,7 +38,6 @@ const App = () => {
             
             <Route path="/cart" element={<Cart />} />
             <Route path="/wishlist" element={<Wishlist />} />
-            {/* <Route path="/admin" element={<AdminPanel />} /> */}
             <Route path="/collection" element={<CollectionPage />} />
 
               
@@ -55,14 +54,8 @@ const App = () => {
           </ProtectedRoute>
         }
       />
-
-          
-
-          
           </Routes>
-
           <Footer/>
-
         </WishlistProvider>
       </CartProvider>
     </AuthProvider>
