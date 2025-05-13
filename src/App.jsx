@@ -15,7 +15,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from "./Components/Footer";
 import CollectionPage from "./pages/Collection";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar"; 
 import AdminSignup from "./admin/AdminSignUp";
 import AdminLogin from "./admin/AdminLogin";
 import ProtectedRoute from "./Components/ProtectedRoute";
