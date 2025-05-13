@@ -1,0 +1,21 @@
+{
+    "name": "Excellup Coding App",
+    "short_name": "Excellup",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "icons": [
+      {
+        "src": "icon.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "serviceworker": {
+      "src": "service-worker.js",
+      "scope": "/",
+      "type": "classic"
+    }
+  }
+  

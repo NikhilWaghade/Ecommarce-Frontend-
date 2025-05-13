@@ -1,22 +1,29 @@
-// pages/Signup.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import API from '../api/api';
 
 const Signup = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
-      await API.post('/auth/signup', { name, email, password });
-      alert('Signup successful');
+      await API.post('/auth/signup', form);
+      toast.success('Signup successful! Please login.');
       navigate('/login');
     } catch (err) {
-      alert('Signup failed');
+      const msg = err.response?.data?.message || 'Signup failed';
+      toast.error(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,9 +37,10 @@ const Signup = () => {
             <label className="block text-gray-700 mb-1">Name</label>
             <input
               type="text"
+              name="name"
               placeholder="Enter your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={form.name}
+              onChange={handleChange}
               required
               className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
             />
@@ -42,9 +50,10 @@ const Signup = () => {
             <label className="block text-gray-700 mb-1">Email</label>
             <input
               type="email"
+              name="email"
               placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={form.email}
+              onChange={handleChange}
               required
               className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
             />
@@ -54,9 +63,10 @@ const Signup = () => {
             <label className="block text-gray-700 mb-1">Password</label>
             <input
               type="password"
+              name="password"
               placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={form.password}
+              onChange={handleChange}
               required
               className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
             />
@@ -64,15 +74,16 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white py-2 rounded font-semibold transition"
+            disabled={loading}
+            className={`bg-green-600 hover:bg-green-700 text-white py-2 rounded font-semibold transition ${loading && 'opacity-50 cursor-not-allowed'}`}
           >
-            Sign Up
+            {loading ? 'Signing Up...' : 'Sign Up'}
           </button>
         </form>
 
         <p className="text-sm text-center text-gray-500 mt-4">
           Already have an account?{' '}
-          <a href="/login" className="text-green-600 hover:underline">Log in</a>
+          <Link to="/login" className="text-green-600 hover:underline">Log in</Link>
         </p>
       </div>
     </div>

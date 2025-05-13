@@ -19,7 +19,7 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Add to cart (with image normalization)
+  // Add product to cart (with quantity = 1 and default image)
   const addToCart = (product) => {
     const exists = cart.find((item) => item._id === product._id);
     if (exists) {
@@ -28,21 +28,31 @@ export const CartProvider = ({ children }) => {
       const formattedProduct = {
         ...product,
         image: product.image || product.images?.[0],
+        quantity: 1,
       };
       setCart([...cart, formattedProduct]);
       toast.success("Added to cart!");
     }
   };
 
-  // Remove one product by ID
+  // Remove product by ID
   const removeFromCart = (id) => {
     const updatedCart = cart.filter((item) => item._id !== id);
     setCart(updatedCart);
     toast.success("Removed from cart");
   };
 
+  // Update product quantity
+  const updateQuantity = (id, newQuantity) => {
+    if (newQuantity < 1) return;
+    const updatedCart = cart.map((item) =>
+      item._id === id ? { ...item, quantity: newQuantity } : item
+    );
+    setCart(updatedCart);
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity }}>
       {children}
     </CartContext.Provider>
   );

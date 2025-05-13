@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-// import ProductCard from '../components/ProductCard';
 import ProductCard from '../Components/ProductCard';
 import SearchBar from '../components/SearchBar';
 import Filter from '../Components/Filter';
-
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -19,17 +17,17 @@ const Home = () => {
     axios.get('http://localhost:5000/api/products')
       .then(res => {
         setProducts(res.data);
+        setFiltered(res.data); // Show all products by default
       })
       .catch(err => {
-        console.error(err); // ← This is where the error is shown
+        console.error(err);
       });
   }, []);
-  
 
   return (
-    <div className="bg-gradient-to-r from-green-100 to-blue-200">
-
-      {/* Swiper Slider - full width */}
+    <div className="bg-gradient-to-r from-green-100 to-blue-200 min-h-screen">
+      
+      {/* Swiper Section */}
       <div className="w-full">
         <Swiper
           modules={[Autoplay]}
@@ -61,16 +59,25 @@ const Home = () => {
         </Swiper>
       </div>
 
-      <div className="p-4 max-w-7xl mx-auto">
-        <SearchBar products={products} setFiltered={setFiltered} />
-        <Filter products={products} setFiltered={setFiltered} />
+      {/* Main Section with Sidebar and Products */}
+      <div className="max-w-7xl mx-auto flex gap-4 p-4">
 
-        <h2 className="text-2xl font-bold my-4">All Products</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {filtered.map(product => (
-            <ProductCard key={product._id} product={product} />
-          ))}
+        {/* Left Sidebar - Fixed Filters */}
+        <div className="w-[250px] sticky top-4 self-start mr-28">
+          <SearchBar products={products} setFiltered={setFiltered} />
+          <Filter products={products} setFiltered={setFiltered} />
         </div>
+
+        {/* Right Content - Products */}
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold mb-4">All Products</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filtered.map(product => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );

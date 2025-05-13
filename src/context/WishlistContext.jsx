@@ -1,36 +1,37 @@
-// src/context/WishlistContext.js
-import React, { createContext, useState, useContext } from "react";
+// WishlistContext.js
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-// Create the context for wishlist
 const WishlistContext = createContext();
 
-// WishlistProvider component to wrap around your app and provide wishlist state
 export const WishlistProvider = ({ children }) => {
-  const [wishlist, setWishlist] = useState([]);
+  const [wishlistItems, setWishlistItems] = useState([]);
 
-  // Add item to wishlist
+  useEffect(() => {
+    const stored = localStorage.getItem("wishlist");
+    if (stored) {
+      setWishlistItems(JSON.parse(stored));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("wishlist", JSON.stringify(wishlistItems));
+  }, [wishlistItems]);
+
   const addToWishlist = (product) => {
-    setWishlist([...wishlist, product]);
+    if (!wishlistItems.find((item) => item._id === product._id)) {
+      setWishlistItems([...wishlistItems, product]);
+    }
   };
 
-  // Remove item from wishlist
-  const removeFromWishlist = (productId) => {
-    setWishlist(wishlist.filter((item) => item.id !== productId));
-  };
-
-  // Clear wishlist
-  const clearWishlist = () => {
-    setWishlist([]);
+  const removeFromWishlist = (id) => {
+    setWishlistItems(wishlistItems.filter((item) => item._id !== id));
   };
 
   return (
-    <WishlistContext.Provider
-      value={{ wishlist, addToWishlist, removeFromWishlist, clearWishlist }}
-    >
+    <WishlistContext.Provider value={{ wishlistItems, addToWishlist, removeFromWishlist }}>
       {children}
     </WishlistContext.Provider>
   );
 };
 
-// Custom hook to use the WishlistContext
 export const useWishlist = () => useContext(WishlistContext);

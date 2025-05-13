@@ -32,12 +32,12 @@ const CollectionPage = () => {
 
   const filteredProducts = products
     .filter((item) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
+      item?.name?.toLowerCase().includes(search.toLowerCase())
     )
     .filter((item) =>
       selectedCategories.length === 0
         ? true
-        : selectedCategories.includes(item.category)
+        : selectedCategories.includes(item?.category)
     )
     .sort((a, b) => {
       if (sortOption === "lowToHigh") return a.price - b.price;
@@ -45,7 +45,9 @@ const CollectionPage = () => {
       return 0;
     });
 
-  const allCategories = [...new Set(products.map((p) => p.category))];
+  const allCategories = [
+    ...new Set(products.map((p) => p.category).filter(Boolean)),
+  ];
 
   return (
     <div className="mx-auto px-4 py-8 bg-gradient-to-r from-green-100 to-blue-200">
@@ -104,7 +106,8 @@ const CollectionPage = () => {
               <Link to={`/product/${item._id}`} key={item._id}>
                 <div className="bg-white rounded-xl shadow hover:shadow-xl transition transform hover:scale-105 duration-300 overflow-hidden cursor-pointer border border-transparent hover:border-pink-500">
                   <img
-                    src={item.image}
+                    // Update image src with correct path
+                    src={`http://localhost:5000/${item.image}`} 
                     alt={item.name}
                     className="w-full h-60 object-cover"
                   />

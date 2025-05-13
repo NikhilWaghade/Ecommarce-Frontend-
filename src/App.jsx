@@ -16,6 +16,9 @@ import "react-toastify/dist/ReactToastify.css";
 import Footer from "./Components/Footer";
 import CollectionPage from "./pages/Collection";
 import Navbar from "./components/Navbar";
+import AdminSignup from "./admin/AdminSignUp";
+import AdminLogin from "./admin/AdminLogin";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 const App = () => {
   return (
@@ -29,12 +32,29 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+
+            {/* <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} /> */}
+            
             <Route path="/cart" element={<Cart />} />
             <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/admin" element={<AdminPanel />} />
+            {/* <Route path="/admin" element={<AdminPanel />} /> */}
             <Route path="/collection" element={<CollectionPage />} />
+
+              
+                {/* Admin Auth Routes */}
+      <Route path="/admin/admin-login" element={<AdminLogin />} />
+      <Route path="/admin/admin-signup" element={<AdminSignup />} />
+
+      {/* Protected Admin Panel Route */}
+      <Route
+        path="/admin/panel"
+        element={
+          <ProtectedRoute>
+            <AdminPanel />
+          </ProtectedRoute>
+        }
+      />
 
           
 
