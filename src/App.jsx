@@ -19,6 +19,8 @@ import Navbar from "./components/Navbar";
 import AdminSignup from "./admin/AdminSignUp";
 import AdminLogin from "./admin/AdminLogin";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
 
 const App = () => {
   return (
@@ -39,11 +41,13 @@ const App = () => {
             <Route path="/cart" element={<Cart />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/collection" element={<CollectionPage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
 
               
                 {/* Admin Auth Routes */}
-      <Route path="/admin/admin-login" element={<AdminLogin />} />
-      <Route path="/admin/admin-signup" element={<AdminSignup />} />
+      <Route path="/admin-login" element={<AdminLogin />} />
+      <Route path="/admin-signup" element={<AdminSignup />} />
 
       {/* Protected Admin Panel Route */}
       <Route

@@ -14,6 +14,7 @@ const ProductDetails = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const { addToCart } = useCart();
 
+  const [reviewUser, setReviewUser] = useState("");
   const [reviewComment, setReviewComment] = useState("");
   const [reviewRating, setReviewRating] = useState(0);
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
@@ -57,19 +58,20 @@ const ProductDetails = () => {
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    if (!reviewRating || !reviewComment.trim()) {
-      toast.error("Please provide rating and comment");
+    if (!reviewUser.trim() || !reviewRating || !reviewComment.trim()) {
+      toast.error("Please fill all fields");
       return;
     }
 
     setIsSubmittingReview(true);
     try {
       const res = await axios.post(`${BASE_URL}/api/products/${id}/reviews`, {
-        user: "Anonymous",
+        user: reviewUser,
         rating: reviewRating,
         comment: reviewComment,
       });
       toast.success("Review submitted!", { autoClose: 1500 });
+      setReviewUser("");
       setReviewComment("");
       setReviewRating(0);
       setProduct(res.data); // Refresh product with new review
@@ -177,6 +179,16 @@ const ProductDetails = () => {
         {/* Review Form */}
         <form onSubmit={handleReviewSubmit} className="mt-6">
           <h3 className="text-lg font-semibold mb-2">Leave a Review</h3>
+
+          <input
+            type="text"
+            className="w-full border rounded p-2 text-sm mb-2"
+            placeholder="Your name"
+            value={reviewUser}
+            onChange={(e) => setReviewUser(e.target.value)}
+            required
+          />
+
           <div className="flex gap-4 items-center mb-2">
             <label className="text-sm">Rating:</label>
             <select
@@ -192,6 +204,7 @@ const ProductDetails = () => {
               ))}
             </select>
           </div>
+
           <textarea
             className="w-full border rounded p-2 text-sm"
             rows="3"
@@ -199,6 +212,7 @@ const ProductDetails = () => {
             value={reviewComment}
             onChange={(e) => setReviewComment(e.target.value)}
           ></textarea>
+
           <button
             type="submit"
             disabled={isSubmittingReview}

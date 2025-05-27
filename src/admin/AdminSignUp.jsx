@@ -14,7 +14,7 @@ const AdminSignup = () => {
     try {
       const res = await API.post('/auth/admin-signup', { name, email, password });
       toast.success('Signup successful!');
-      navigate('/admin/admin-login');
+      navigate('/admin-login');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Signup failed');
     }
@@ -31,7 +31,7 @@ const AdminSignup = () => {
           <button type="submit" className="bg-green-600 text-white py-2 rounded">Sign Up</button>
         </form>
         <p className="text-center mt-4 text-gray-500">
-          Already an admin? <a href="/admin/admin-login" className="text-blue-600 underline">Login</a>
+          Already an admin? <a href="/admin-login" className="text-blue-600 underline">Login</a>
         </p>
       </div>
     </div>
