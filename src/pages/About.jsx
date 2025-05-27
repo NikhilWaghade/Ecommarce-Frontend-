@@ -78,10 +78,10 @@ const About = () => {
       {/* About Us */}
       <section className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">About Us</h1>
-        <p className="max-w-2xl mx-auto text-lg text-gray-600">
-          This is Photoshop's version of Lorem Ipsum. Proin gravida nibh vel velit auctor aliquet.
-          Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat.
-        </p>
+       <p className="max-w-2xl mx-auto text-lg ">
+  Discover comfort, style, and quality with <strong> D&D E-shop </strong> — your go-to destination for premium footwear. From everyday essentials to trend-setting designs, we bring you shoes and slippers that fit your life perfectly.
+</p>
+
       </section>
 
       {/* About the Company */}
@@ -98,22 +98,18 @@ const About = () => {
   {/* Company Description */}
   <div className="md:w-2/3">
     <h2 className="text-3xl font-semibold mb-4">About the Company</h2>
-    <p className="text-gray-600 leading-relaxed">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-      laboris nisi ut aliquip ex ea commodo consequat.
-    </p>
-    <p className="mt-4 text-gray-600 leading-relaxed">
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-      pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-      mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-      accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
-      veritatis.
-    </p>
-    <p className="mt-4 text-gray-600">
-      Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-      consequuntur magni dolores.
-    </p>
+   <p className=" leading-relaxed">
+  At <strong>D&D E-shop</strong>, we believe the right footwear can transform your day. Whether you're heading out for a walk, dressing up for a special occasion, or simply relaxing at home, we’ve got the perfect pair for you. Our curated collection includes everything from stylish shoes and sandals to soft, durable slippers designed for all-day comfort.
+</p>
+
+<p className="mt-4  leading-relaxed">
+  We focus on delivering top-quality craftsmanship, modern designs, and exceptional value. Every product in our store is selected with care to ensure it meets our standards for comfort, durability, and style. Our goal is simple — to make sure you step out with confidence and comfort every single day.
+</p>
+
+<p className="mt-4 ">
+  Join thousands of happy customers who trust D&D E-shop for their footwear needs. Experience the difference in every step.
+</p>
+
   </div>
 </section>
 
@@ -201,7 +197,7 @@ const About = () => {
             </div>
 
       {/* Hot Deal Section */}
- <section className="mb-16 text-center bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 p-10 rounded-3xl shadow-2xl text-white">
+ {/* <section className="mb-16 text-center bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 p-10 rounded-3xl shadow-2xl text-white">
   <h2 className="text-4xl sm:text-5xl font-extrabold mb-6 drop-shadow-md">
     🚀 Limited Time Offer: {timeLeft.days} Days Left – <span className="text-yellow-300">50% OFF</span>
   </h2>
@@ -226,7 +222,7 @@ const About = () => {
       </div>
     ))}
   </div>
-</section>
+</section> */}
 
 
 

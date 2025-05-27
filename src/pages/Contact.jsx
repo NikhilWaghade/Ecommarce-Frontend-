@@ -46,7 +46,8 @@ const Contact = () => {
           <div className="rounded overflow-hidden shadow-lg">
             <iframe
               title="Google Map"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3021.8272873944647!2d-74.00471608459258!3d40.71305444524464!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a316da173d1%3A0x50a78c117b285f93!2sBroadway%2C%20New%20York%2C%20NY%2010013%2C%20USA!5e0!3m2!1sen!2sin!4v1626762032409!5m2!1sen!2sin"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14813.822623309698!2d80.22058414360954!3d21.839953248045337!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a2a5b96b6498943%3A0xe5501479aa294ba8!2sBharveli%2C%20Madhya%20Pradesh%20481102!5e0!3m2!1sen!2sin!4v1748336604647!5m2!1sen!2sin"  referrerpolicy="no-referrer-when-downgrade"
+
               width="100%"
               height="300"
               style={{ border: 0 }}
