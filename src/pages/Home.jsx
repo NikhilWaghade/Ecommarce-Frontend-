@@ -15,6 +15,8 @@ const Home = () => {
   const [highPriceProducts, setHighPriceProducts] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
 
+  const heroImages = [hero1, hero2, hero3];
+
   // Fetch products
   useEffect(() => {
     axios.get('http://localhost:5000/api/products')
@@ -70,19 +72,23 @@ const Home = () => {
   return (
     <div className="bg-gradient-to-r from-green-100 to-blue-200 min-h-screen">
       {/* Top Banner Swiper */}
-      <div className="w-full">
-        <Swiper modules={[Autoplay]} autoplay={{ delay: 3000 }} loop>
-          {[hero1, hero2, hero3].map((img, idx) => (
-            <SwiperSlide key={idx}>
-              <img
-                src={img}
-                alt={`Slider ${idx + 1}`}
-                className="w-full h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px] object-cover"
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+     <div className="w-full">
+      <Swiper
+        modules={[Autoplay]}
+        autoplay={{ delay: 3000 }}
+        loop
+      >
+        {heroImages.map((img, idx) => (
+          <SwiperSlide key={idx}>
+            <img
+              src={img}
+              alt={`Slider ${idx + 1}`}
+              className="w-full h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px] object-cover"
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
 
       {/* Latest Products */}
       <div className="max-w-7xl mx-auto px-4 py-10">
