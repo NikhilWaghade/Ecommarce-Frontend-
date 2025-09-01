@@ -12,8 +12,8 @@ const AdminSignup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      const res = await API.post('/auth/admin-signup', { name, email, password });
-      toast.success('Signup successful!');
+      const res = await API.post('http://localhost:5000/api/auth/admin-signup', { name, email, password });
+      toast.success(res.data.message || 'Signup successful!');
       navigate('/admin-login');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Signup failed');

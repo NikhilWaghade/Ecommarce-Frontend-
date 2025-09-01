@@ -14,10 +14,23 @@ const AdminLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await API.post('/auth/admin-login', { email, password });
-      login(res.data.admin);
-      toast.success('Login successful!', { autoClose: 1500 });
-      navigate('/admin/panel');
+      const res = await API.post(
+        '/auth/admin-login',
+        { email, password },
+        { withCredentials: true } // 🔐 Ensure credentials included
+      );
+
+      if (res.data && res.data.token) {
+        login(res.data); // optionally store whole token+admin info
+        toast.success('Login successful!', { autoClose: 1500 });
+
+        // slight delay ensures context updates before route change
+        setTimeout(() => {
+          navigate('/admin/panel');
+        }, 100);
+      } else {
+        toast.error('Login response invalid');
+      }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Login failed');
     }
