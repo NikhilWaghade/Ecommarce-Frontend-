@@ -6,6 +6,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/autoplay';
 import { Autoplay } from 'swiper/modules';
+import hero1 from '../assets/hero-image1.jpg';
+import hero2 from '../assets/hero-image2.jpg';
+import hero3 from '../assets/hero-image3.jpg';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -69,10 +72,10 @@ const Home = () => {
       {/* Top Banner Swiper */}
       <div className="w-full">
         <Swiper modules={[Autoplay]} autoplay={{ delay: 3000 }} loop>
-          {['hero-image1.jpg', 'hero-image2.jpg', 'hero-image3.jpg'].map((img, idx) => (
+          {[hero1, hero2, hero3].map((img, idx) => (
             <SwiperSlide key={idx}>
               <img
-                src={`src/assets/${img}`}
+                src={img}
                 alt={`Slider ${idx + 1}`}
                 className="w-full h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px] object-cover"
               />
