@@ -24,12 +24,20 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Navbar from "./Components/Navbar";
+import ScrollToTop from "./Components/ScrollToTop";
+import NavigationLoader from "./Components/NavigationLoader";
 
 const App = () => (
   <AuthProvider> {/* Wrap with AuthProvider */}
     <CartProvider> {/* Wrap with CartProvider */}
       <WishlistProvider> {/* Wrap with WishlistProvider */}
         <ToastContainer /> {/* For displaying toast notifications */}
+        
+        {/* Navigation Loader - Shows loading animation during page transitions */}
+        <NavigationLoader />
+        
+        {/* Scroll to Top - Automatically scrolls to top on route change */}
+        <ScrollToTop />
 
         {/* Define your routes */}
         <Navbar/>
@@ -52,8 +60,12 @@ const App = () => (
           <Route path="/admin-signup" element={<AdminSignup />} />
           <Route path="/admin-login" element={<AdminLogin />} />
 
-
-          {/* Protected Admin Panel Route */}
+          {/* Protected Admin Panel Routes */}
+          <Route
+            path="/admin"
+            element={<ProtectedRoute>
+              <AdminPanel />
+            </ProtectedRoute>} />
           <Route
             path="/admin/panel"
             element={<ProtectedRoute>

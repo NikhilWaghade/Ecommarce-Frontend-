@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import ProductCard from "../Components/ProductCard";
 
 const ProductDetails = () => {
@@ -13,6 +15,7 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [relatedProducts, setRelatedProducts] = useState([]);
   const { addToCart } = useCart();
+  const { wishlistItems, addToWishlist, removeFromWishlist } = useWishlist();
 
   const [reviewUser, setReviewUser] = useState("");
   const [reviewComment, setReviewComment] = useState("");
@@ -55,6 +58,20 @@ const ProductDetails = () => {
     addToCart({ ...product, selectedSize });
     toast.success("Added to cart!", { autoClose: 1000 });
   };
+
+  const handleWishlistToggle = () => {
+    if (!product) return;
+    
+    const productId = product._id || product.id;
+    const isWishlisted = wishlistItems.some((item) => (item._id || item.id) === productId);
+    if (isWishlisted) {
+      removeFromWishlist(productId);
+    } else {
+      addToWishlist(product);
+    }
+  };
+
+  const isWishlisted = product && wishlistItems.some((item) => (item._id || item.id) === (product._id || product.id));
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
@@ -130,14 +147,24 @@ const ProductDetails = () => {
 
         {/* Product Info Section */}
         <div className="flex flex-col gap-4">
-          <h1 className="text-2xl font-bold">{product.name}</h1>
+          <div className="flex items-start justify-between">
+            <h1 className="text-2xl font-bold">{product.name}</h1>
+            <button
+              onClick={handleWishlistToggle}
+              className="text-2xl text-pink-500 hover:scale-110 transition p-2"
+              title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            >
+              {isWishlisted ? <FaHeart /> : <FaRegHeart />}
+            </button>
+          </div>
+          
           <p className="text-gray-700">{product.description}</p>
           <div className="text-lg font-semibold text-green-600">₹{product.price}</div>
 
           <div className="mt-2">
             <label className="text-sm font-medium">Select Size:</label>
             <div className="flex gap-2 mt-1">
-              {["S", "M", "L", "XL", "XXL"].map((size) => (
+              {["5", "6", "7", "8", "9"].map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
@@ -151,12 +178,24 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          <button
-            onClick={handleAddToCart}
-            className="mt-4 bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
-          >
-            Add to Cart
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={handleAddToCart}
+              className="flex-1 bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
+            >
+              Add to Cart
+            </button>
+            <button
+              onClick={handleWishlistToggle}
+              className={`px-6 py-2 rounded border-2 transition ${
+                isWishlisted 
+                  ? "bg-pink-500 text-white border-pink-500 hover:bg-pink-600" 
+                  : "bg-white text-pink-500 border-pink-500 hover:bg-pink-50"
+              }`}
+            >
+              {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+            </button>
+          </div>
         </div>
       </div>
 

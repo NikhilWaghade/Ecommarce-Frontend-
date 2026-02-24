@@ -8,24 +8,33 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useWishlist } from "../context/WishlistContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 const CollectionPage = () => {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [sortOption, setSortOption] = useState("relevant");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const { wishlistItems, addToWishlist, removeFromWishlist } = useWishlist();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const res = await fetch("http://localhost:5000/api/products");
+        if (!res.ok) throw new Error("Failed to fetch products");
         const data = await res.json();
         setProducts(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Failed to fetch products", error);
+      } catch (err) {
+        setError(err.message);
+        toast.error("Failed to load products");
+      } finally {
+        setLoading(false);
       }
     };
     fetchProducts();
@@ -39,177 +48,198 @@ const CollectionPage = () => {
     );
   };
 
-  const handleWishlistToggle = (product) => {
-    const exists = wishlistItems.find((item) => item._id === product._id);
+  const handleWishlistToggle = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const productId = product._id || product.id;
+    const exists = wishlistItems.find(
+      (item) => (item._id || item.id) === productId
+    );
+
     if (exists) {
-      removeFromWishlist(product._id);
+      removeFromWishlist(productId);
+      toast.success(`${product.name} removed from wishlist`);
     } else {
       addToWishlist(product);
+      toast.success(`${product.name} added to wishlist`);
     }
   };
 
-  const goToWishlistPage = () => {
-    navigate("/wishlist");
-  };
+  const goToWishlistPage = () => navigate("/wishlist");
 
+  // Category Deduplication (Safe)
   const allCategories = [
-    ...new Set(products.map((p) => p.category).filter(Boolean)),
+    ...new Map(
+      products
+        .filter((p) => p.category)
+        .map((p) => {
+          const clean = p.category.trim();
+          return [clean.toLowerCase(), clean];
+        })
+    ).values(),
   ];
 
   const filteredProducts = products
     .filter((item) =>
       item?.name?.toLowerCase().includes(search.toLowerCase())
     )
-    .filter((item) =>
-      selectedCategories.length === 0
-        ? true
-        : selectedCategories.includes(item?.category)
-    )
+    .filter((item) => {
+      if (selectedCategories.length === 0) return true;
+      const productCategory = item?.category?.trim().toLowerCase();
+      const selectedNormalized = selectedCategories.map((c) =>
+        c.toLowerCase()
+      );
+      return selectedNormalized.includes(productCategory);
+    })
     .sort((a, b) => {
       if (sortOption === "lowToHigh") return a.price - b.price;
       if (sortOption === "highToLow") return b.price - a.price;
       return 0;
     });
 
-  return (
-    <div className="mx-auto px-4 py-8 bg-gradient-to-r from-green-100 to-blue-200 min-h-screen">
-      <h1 className="text-4xl font-bold text-center mb-10 text-gray-800">
-        D&D E-Shop Footwear Collection
-      </h1>
-
-      {/* Filter Tabs */}
-      <div className="flex justify-center flex-wrap gap-4 mb-10">
-        {allCategories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => handleCategoryChange(cat)}
-            className={`px-5 py-2 rounded-full text-sm font-medium border transition duration-300 ${
-              selectedCategories.includes(cat)
-                ? "bg-pink-600 text-white border-pink-700 shadow-md"
-                : "bg-white text-gray-700 border-gray-300 hover:bg-pink-100"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
       </div>
+    );
+  }
 
-      <div className="flex flex-col md:flex-row gap-10">
-        {/* Sidebar */}
-        <aside className="w-full md:w-1/4 bg-gradient-to-r from-green-100 to-blue-200 p-6 rounded-2xl shadow-lg -mt-44">
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        {error}
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-gradient-to-r from-green-100 to-blue-200 min-h-screen px-4 py-8">
+      <motion.h1
+        className="text-4xl font-bold text-center mb-10 text-gray-800"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        D&D E-Shop Footwear Collection
+      </motion.h1>
+
+      <div className="flex flex-col md:flex-row gap-8">
+
+        {/* LEFT SIDEBAR */}
+        <motion.aside
+          className="w-full md:w-1/4 bg-white p-6 rounded-2xl shadow-lg h-fit"
+          initial={{ x: -40, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+        >
           <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-            Filter by Category
+            Categories
           </h2>
-          <div className="space-y-4">
+
+          <div className="space-y-3">
             {allCategories.map((cat) => (
-              <label
+              <button
                 key={cat}
-                className="flex items-center gap-3 text-gray-800 hover:text-pink-600 transition-colors duration-200 cursor-pointer"
+                onClick={() => handleCategoryChange(cat)}
+                className={`w-full text-left px-4 py-2 rounded-lg transition font-medium ${
+                  selectedCategories.includes(cat)
+                    ? "bg-pink-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-pink-100"
+                }`}
               >
-                <input
-                  type="checkbox"
-                  checked={selectedCategories.includes(cat)}
-                  onChange={() => handleCategoryChange(cat)}
-                  className="accent-pink-500 w-4 h-4 rounded-sm"
-                />
-                <span className="text-base">{cat}</span>
-              </label>
+                {cat}
+              </button>
             ))}
           </div>
 
           <button
             onClick={goToWishlistPage}
-            className="mt-6 w-full bg-pink-600 text-white py-2 px-4 rounded-full hover:bg-pink-700 transition"
+            className="mt-6 w-full bg-pink-600 text-white py-2 rounded-full hover:bg-pink-700 transition"
           >
             View Wishlist ({wishlistItems.length})
           </button>
-        </aside>
+        </motion.aside>
 
-        {/* Main Content */}
-        <main className="flex-1">
+        {/* RIGHT PRODUCT SECTION */}
+        <div className="flex-1">
+
           {/* Search + Sort */}
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-            <div className="flex gap-4 flex-wrap items-center justify-center md:justify-end w-full">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-64 shadow-sm"
-                />
-                <FaSearch className="absolute top-3 left-3 text-gray-500" />
-              </div>
-
-              <select
-                onChange={(e) => setSortOption(e.target.value)}
-                className="border border-gray-300 p-2 rounded-md shadow-sm"
-              >
-                <option value="relevant">Sort by: Relevant</option>
-                <option value="lowToHigh">Price: Low to High</option>
-                <option value="highToLow">Price: High to Low</option>
-              </select>
+          <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10 pr-4 py-2 border rounded-md w-64"
+              />
+              <FaSearch className="absolute top-3 left-3 text-gray-500" />
             </div>
+
+            <select
+              onChange={(e) => setSortOption(e.target.value)}
+              className="border p-2 rounded-md"
+            >
+              <option value="relevant">Relevant</option>
+              <option value="lowToHigh">Price: Low to High</option>
+              <option value="highToLow">Price: High to Low</option>
+            </select>
           </div>
 
           {/* Product Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((item) => {
-              const isWishlisted = wishlistItems.some(
-                (p) => p._id === item._id
-              );
-              return (
-                <div
-                  key={item._id}
-                  className="relative bg-white rounded-xl shadow hover:shadow-lg transition transform hover:scale-105 duration-300 overflow-hidden border border-transparent hover:border-pink-500"
-                >
-                  <Link to={`/product/${item._id}`}>
-                    <img
-                      src={`http://localhost:5000/${item.image}`}
-                      alt={item.name}
-                      className="w-full h-60 object-cover"
-                    />
-                  </Link>
+          <motion.div
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"
+            layout
+          >
+            <AnimatePresence>
+              {filteredProducts.map((item) => {
+                const itemId = item._id || item.id;
+                const isWishlisted = wishlistItems.some(
+                  (w) => (w._id || w.id) === itemId
+                );
 
-                  {/* Heart Icon */}
-                  <button
-                    onClick={() => handleWishlistToggle(item)}
-                    className="absolute top-3 right-3 text-xl text-pink-500 bg-white rounded-full p-1 shadow-md hover:scale-110 transition"
+                return (
+                  <motion.div
+                    key={itemId}
+                    className="bg-white rounded-xl shadow p-4 relative"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
                   >
-                    {isWishlisted ? <FaHeart /> : <FaRegHeart />}
-                  </button>
+                    <Link to={`/product/${itemId}`}>
+                      <img
+                        src={
+                          item.image
+                            ? `http://localhost:5000/${item.image}`
+                            : "/placeholder.jpg"
+                        }
+                        alt={item.name}
+                        className="w-full h-48 object-cover rounded-md"
+                      />
+                    </Link>
 
-                  <div className="p-4 text-center">
-                    <h3 className="text-md font-semibold text-gray-800">
+                    <button
+                      onClick={(e) => handleWishlistToggle(e, item)}
+                      className="absolute top-3 right-3 bg-white p-2 rounded-full shadow"
+                    >
+                      {isWishlisted ? (
+                        <FaHeart className="text-pink-600" />
+                      ) : (
+                        <FaRegHeart className="text-gray-500" />
+                      )}
+                    </button>
+
+                    <h3 className="mt-3 font-semibold text-gray-800">
                       {item.name}
                     </h3>
-                    <p className="text-green-700 font-bold text-lg mt-2">
-                      <mark className="bg-yellow-200 rounded px-1">
-                        ₹{item.price}
-                      </mark>
+                    <p className="text-green-600 font-bold mt-1">
+                      ₹{item.price}
                     </p>
-                    <Link
-                      to={`/product/${item._id}`}
-                      onClick={() =>
-                        toast.info("Please select size before adding to cart")
-                      }
-                      className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-pink-600 text-white text-sm rounded-full hover:bg-pink-700 transition"
-                    >
-                      <FaShoppingCart />
-                      Add to Cart
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {filteredProducts.length === 0 && (
-            <p className="text-gray-600 mt-10 text-center text-lg font-medium">
-              No products found for your search or filters.
-            </p>
-          )}
-        </main>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

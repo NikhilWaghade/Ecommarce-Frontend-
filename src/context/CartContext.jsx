@@ -21,32 +21,36 @@ export const CartProvider = ({ children }) => {
 
   // Add product to cart (with quantity = 1 and default image)
   const addToCart = (product) => {
-    const exists = cart.find((item) => item._id === product._id);
+    // Handle both MongoDB (_id) and Supabase (id) formats
+    const productId = product._id || product.id;
+    const exists = cart.find((item) => (item._id || item.id) === productId);
+    
     if (exists) {
-      toast.info("Product already in cart");
+      toast.info("Product already in cart", { autoClose: 1500 });
     } else {
       const formattedProduct = {
         ...product,
+        _id: productId, // Normalize to _id for consistency
         image: product.image || product.images?.[0],
         quantity: 1,
       };
       setCart([...cart, formattedProduct]);
-      toast.success("Added to cart!");
+      toast.success("Added to cart!", { autoClose: 1500 });
     }
   };
 
   // Remove product by ID
   const removeFromCart = (id) => {
-    const updatedCart = cart.filter((item) => item._id !== id);
+    const updatedCart = cart.filter((item) => (item._id || item.id) !== id);
     setCart(updatedCart);
-    toast.success("Removed from cart");
+    toast.success("Removed from cart", { autoClose: 1500 });
   };
 
   // Update product quantity
   const updateQuantity = (id, newQuantity) => {
     if (newQuantity < 1) return;
     const updatedCart = cart.map((item) =>
-      item._id === id ? { ...item, quantity: newQuantity } : item
+      (item._id || item.id) === id ? { ...item, quantity: newQuantity } : item
     );
     setCart(updatedCart);
   };

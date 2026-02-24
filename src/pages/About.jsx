@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { motion } from 'framer-motion';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -14,22 +15,22 @@ const About = () => {
     description: " Collection",
   },
   {
-    image: "https://theambiencehome.com/cdn/shop/files/5f9f3e64-7b34-4b58-a5b5-a5d1029c0647.jpg?v=1740511005&width=533",
+    image: "https://i.pinimg.com/736x/6d/e0/74/6de074f1225aafafcc789de9ba9e0c07.jpg",
     title: "Classic Style",
     description: " Collection",
   },
   {
-    image: "https://theambiencehome.com/cdn/shop/files/1622360290787.jpg?v=1740676927&width=533",
+    image: "https://i.pinimg.com/736x/3a/e2/b5/3ae2b54534d8ed910cea6750ff2c4961.jpg",
     title: "Summer Vibes",
     description: " Collection",
   },
   {
-    image: "https://theambiencehome.com/cdn/shop/files/2187485522408.jpg?v=1740677243&width=533",
+    image: "https://i.pinimg.com/1200x/84/15/d5/8415d53e44c22d52365ffb4e39ecfcc3.jpg",
     title: "Modern Look",
     description: " Collection",
   },
   {
-    image: "https://theambiencehome.com/cdn/shop/files/86070973054.jpg?v=1740688500&width=533",
+    image: "https://i.pinimg.com/736x/54/74/78/547478a641e0cba5fff07ace7d3d89d2.jpg",
     title: "Elegant Choice",
     description: " Collection",
   },
@@ -74,49 +75,117 @@ const About = () => {
   }, []); // Empty dependency array = run once
 
   return (
-    <div className="pt-20 px-4 md:px-16 bg-gradient-to-r from-green-100 to-blue-200 text-black">
+    <div className="pt-20 px-4 md:px-16 bg-gradient-to-r from-green-100 to-blue-200 text-black overflow-hidden">
       {/* About Us */}
-      <section className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">About Us</h1>
-       <p className="max-w-2xl mx-auto text-lg ">
-  Discover comfort, style, and quality with <strong> D&D E-shop </strong> — your go-to destination for premium footwear. From everyday essentials to trend-setting designs, we bring you shoes and slippers that fit your life perfectly.
-</p>
-
-      </section>
+      <motion.section 
+        className="text-center mb-12"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <motion.h1 
+          className="text-4xl font-bold mb-4"
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6, type: "spring", stiffness: 150 }}
+        >
+          About Us
+        </motion.h1>
+        <motion.p 
+          className="max-w-2xl mx-auto text-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          Discover comfort, style, and quality with <strong> D&D E-shop </strong> — your go-to destination for premium footwear. From everyday essentials to trend-setting designs, we bring you shoes and slippers that fit your life perfectly.
+        </motion.p>
+      </motion.section>
 
       {/* About the Company */}
-    <section className="mb-16 flex flex-col md:flex-row items-start gap-8">
-  {/* Company Logo */}
-  <div className="md:w-1/3 flex justify-center w-56">
-    <img
-      src="src/assets/logo(final).jpg" // Replace this with your actual logo path
-      alt="Company Logo"
-      className=" md:w-64 object-contain"
-    />
-  </div>
+    <motion.section 
+      className="mb-16 flex flex-col md:flex-row items-start gap-8"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.8 }}
+    >
+      {/* Company Logo */}
+      <motion.div 
+        className="md:w-1/3 flex justify-center w-56"
+        initial={{ x: -100, opacity: 0, rotate: -10 }}
+        whileInView={{ x: 0, opacity: 1, rotate: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, type: "spring" }}
+        whileHover={{ scale: 1.05, rotate: [0, 5, -5, 0] }}
+      >
+        <img
+          src="src/assets/logo(final).jpg"
+          alt="Company Logo"
+          className="md:w-64 object-contain"
+        />
+      </motion.div>
 
-  {/* Company Description */}
-  <div className="md:w-2/3">
-    <h2 className="text-3xl font-semibold mb-4">About the Company</h2>
-   <p className=" leading-relaxed">
-  At <strong>D&D E-shop</strong>, we believe the right footwear can transform your day. Whether you're heading out for a walk, dressing up for a special occasion, or simply relaxing at home, we’ve got the perfect pair for you. Our curated collection includes everything from stylish shoes and sandals to soft, durable slippers designed for all-day comfort.
-</p>
+      {/* Company Description */}
+      <div className="md:w-2/3">
+        <motion.h2 
+          className="text-3xl font-semibold mb-4"
+          initial={{ x: 100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          About the Company
+        </motion.h2>
+        <motion.p 
+          className="leading-relaxed"
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          At <strong>D&D E-shop</strong>, we believe the right footwear can transform your day. Whether you're heading out for a walk, dressing up for a special occasion, or simply relaxing at home, we've got the perfect pair for you. Our curated collection includes everything from stylish shoes and sandals to soft, durable slippers designed for all-day comfort.
+        </motion.p>
 
-<p className="mt-4  leading-relaxed">
-  We focus on delivering top-quality craftsmanship, modern designs, and exceptional value. Every product in our store is selected with care to ensure it meets our standards for comfort, durability, and style. Our goal is simple — to make sure you step out with confidence and comfort every single day.
-</p>
+        <motion.p 
+          className="mt-4 leading-relaxed"
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          We focus on delivering top-quality craftsmanship, modern designs, and exceptional value. Every product in our store is selected with care to ensure it meets our standards for comfort, durability, and style. Our goal is simple — to make sure you step out with confidence and comfort every single day.
+        </motion.p>
 
-<p className="mt-4 ">
-  Join thousands of happy customers who trust D&D E-shop for their footwear needs. Experience the difference in every step.
-</p>
-
-  </div>
-</section>
+        <motion.p 
+          className="mt-4"
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          Join thousands of happy customers who trust D&D E-shop for their footwear needs. Experience the difference in every step.
+        </motion.p>
+      </div>
+    </motion.section>
 
 
       {/* New Trendy Bag Collection */}
-     <section className="mb-16">
-      <h2 className="text-3xl font-semibold mb-6 text-center">New Trendy Bag Collection</h2>
+     <motion.section 
+       className="mb-16"
+       initial={{ opacity: 0, y: 50 }}
+       whileInView={{ opacity: 1, y: 0 }}
+       viewport={{ once: true, amount: 0.2 }}
+       transition={{ duration: 0.8 }}
+     >
+      <motion.h2 
+        className="text-3xl font-semibold mb-6 text-center"
+        initial={{ scale: 0.8, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
+        New Trendy Bag Collection
+      </motion.h2>
 
       <Swiper
         modules={[Navigation, Pagination, Autoplay]} 
@@ -137,64 +206,124 @@ const About = () => {
       >
         {Collection.map(({ image, title, description }, idx) => (
           <SwiperSlide key={idx}>
-            <div className="border p-6 rounded shadow hover:shadow-lg hover:shadow-pink-600 bg-sky-100 transition flex flex-col items-center text-center">
-              <img
+            <motion.div 
+              className="border p-6 rounded shadow bg-sky-100 flex flex-col items-center text-center"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              whileHover={{ 
+                scale: 1.05,
+                boxShadow: "0 20px 25px -5px rgba(219, 39, 119, 0.4)",
+                borderColor: "#ec4899"
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.img
                 src={image}
                 alt={`${title} ${idx + 1}`}
                 className="mb-4 w-full h-80 object-cover rounded"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.5 }}
               />
-              <h3 className="text-xl font-semibold mb-2">{title}</h3>
+              <motion.h3 
+                className="text-xl font-semibold mb-2"
+                whileHover={{ color: "#ec4899" }}
+              >
+                {title}
+              </motion.h3>
               <p className="text-gray-500">{description}</p>
-            </div>
+            </motion.div>
           </SwiperSlide>
         ))}
       </Swiper>
-    </section>
+    </motion.section>
 
       {/* Fashion Model Collection */}
-       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col lg:flex-row items-center gap-10">
+       <motion.div 
+         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col lg:flex-row items-center gap-10"
+         initial={{ opacity: 0 }}
+         whileInView={{ opacity: 1 }}
+         viewport={{ once: true, amount: 0.3 }}
+         transition={{ duration: 0.8 }}
+       >
               {/* Left: Image Swiper */}
-              <div className="w-full lg:w-1/2">
+              <motion.div 
+                className="w-full lg:w-1/2"
+                initial={{ x: -100, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
                 <Swiper
                   modules={[Autoplay]}
                   autoplay={{ delay: 2500, disableOnInteraction: false }}
                   loop={true}
                 >
                   <SwiperSlide>
-                    <img
+                    <motion.img
                       src="https://img.freepik.com/free-vector/running-sport-shoes-illustration_1284-17528.jpg"
                       alt="Banner 1"
                       className="rounded-xl w-full h-60 sm:h-72 md:h-80 lg:h-96 object-cover shadow-md"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
                     />
                   </SwiperSlide>
                   <SwiperSlide>
-                    <img
+                    <motion.img
                       src="https://img.freepik.com/premium-photo/ivory-female-wedding-footwear-isolated-white_254969-303.jpg"
                       alt="Banner 2"
                       className="rounded-xl w-full h-60 sm:h-72 md:h-80 lg:h-96 object-cover shadow-md"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
                     />
                   </SwiperSlide>
                   <SwiperSlide>
-                    <img
+                    <motion.img
                       src="https://img.freepik.com/premium-photo/sneakers-boots_87394-530.jpg"
                       alt="Banner 3"
                       className="rounded-xl w-full h-60 sm:h-72 md:h-80 lg:h-96 object-cover shadow-md"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
                     />
                   </SwiperSlide>
                 </Swiper>
-              </div>
+              </motion.div>
       
               {/* Right: Text Content */}
-              <div className="w-full lg:w-1/2 space-y-4 text-center lg:text-left">
-                <h2 className="text-2xl sm:text-3xl font-bold text-pink-600">Why Choose Our Shoes?</h2>
-                <p className="text-gray-700 text-base sm:text-lg">
+              <motion.div 
+                className="w-full lg:w-1/2 space-y-4 text-center lg:text-left"
+                initial={{ x: 100, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <motion.h2 
+                  className="text-2xl sm:text-3xl font-bold text-pink-600"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  Why Choose Our Shoes?
+                </motion.h2>
+                <motion.p 
+                  className="text-gray-700 text-base sm:text-lg"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.6 }}
+                >
                   Our shoes are designed with passion, precision, and premium materials. From casual sneakers to performance footwear, we combine comfort with cutting-edge style.
-                </p>
-                <p className="text-gray-600 text-sm sm:text-base">
+                </motion.p>
+                <motion.p 
+                  className="text-gray-600 text-sm sm:text-base"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.8 }}
+                >
                   Whether you're walking the streets or running the track, our shoes deliver unmatched durability, support, and fashion — every step of the way.
-                </p>
-              </div>
-            </div>
+                </motion.p>
+              </motion.div>
+            </motion.div>
 
       {/* Hot Deal Section */}
  {/* <section className="mb-16 text-center bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 p-10 rounded-3xl shadow-2xl text-white">
@@ -227,39 +356,107 @@ const About = () => {
 
 
       {/* For Him & Her */}
-      <section className=" grid md:grid-cols-2 gap-12">
+      <motion.section 
+        className="grid md:grid-cols-2 gap-12"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.8 }}
+      >
         {/* For Him */}
-        <div>
-          <h2 className="text-3xl font-semibold mb-2">For Him</h2>
-          <h4 className="text-xl text-gray-800 mb-4">Amazing Shoes for men</h4>
-          <p className="text-gray-600 mb-4">
+        <motion.div
+          initial={{ x: -50, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          whileHover={{ scale: 1.02 }}
+        >
+          <motion.h2 
+            className="text-3xl font-semibold mb-2"
+            whileHover={{ color: "#3b82f6" }}
+          >
+            For Him
+          </motion.h2>
+          <motion.h4 
+            className="text-xl text-gray-800 mb-4"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+          >
+            Amazing Shoes for men
+          </motion.h4>
+          <motion.p 
+            className="text-gray-600 mb-4"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+          >
             Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
             labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
             laboris nisi ut aliquip ex ea commodo consequat.
-          </p>
-          <p className="text-gray-600">
+          </motion.p>
+          <motion.p 
+            className="text-gray-600"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+          >
             Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim
             id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
             doloremque laudantium.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* For Her */}
-        <div>
-          <h2 className="text-3xl font-semibold mb-2">For Her</h2>
-          <h4 className="text-xl text-gray-600 mb-4">Amazing Shoes for women</h4>
-          <p className="text-gray-600 mb-4">
+        <motion.div
+          initial={{ x: 50, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          whileHover={{ scale: 1.02 }}
+        >
+          <motion.h2 
+            className="text-3xl font-semibold mb-2"
+            whileHover={{ color: "#ec4899" }}
+          >
+            For Her
+          </motion.h2>
+          <motion.h4 
+            className="text-xl text-gray-600 mb-4"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+          >
+            Amazing Shoes for women
+          </motion.h4>
+          <motion.p 
+            className="text-gray-600 mb-4"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+          >
             Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
             labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
             laboris nisi ut aliquip ex ea commodo consequat.
-          </p>
-          <p className="text-gray-600">
+          </motion.p>
+          <motion.p 
+            className="text-gray-600"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+          >
             Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim
             id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
             doloremque laudantium.
-          </p>
-        </div>
-      </section>
+          </motion.p>
+        </motion.div>
+      </motion.section>
     </div>
   );
 };
