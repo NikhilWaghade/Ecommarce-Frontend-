@@ -63,8 +63,7 @@ const AdminPanel = () => {
   }, [admin, navigate]);
 
   const fetchProducts = () => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/products`)
+    axios.get(`${import.meta.env.VITE_API_URL}/products`)
       .then((res) => setProducts(res.data))
       .catch(() => toast.error("Failed to load products", { autoClose: 1500 }));
   };

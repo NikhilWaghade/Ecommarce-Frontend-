@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { FaHeart, FaShoppingCart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
+import { toast } from "react-toastify";
 import API from "../api/api";
+
+import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -13,12 +17,14 @@ import hero3 from "../assets/hero-image3.jpg";
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [highPriceProducts, setHighPriceProducts] = useState([]);
-  const [wishlistItems, setWishlistItems] = useState([]);
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
     minutes: 0,
     seconds: 0,
   });
+
+  const { addToCart } = useCart();
+  const { wishlistItems, addToWishlist, removeFromWishlist } = useWishlist();
 
   const heroImages = [
     { id: "hero1", img: hero1 },
@@ -26,7 +32,9 @@ const Home = () => {
     { id: "hero3", img: hero3 },
   ];
 
+  // =========================
   // FETCH PRODUCTS
+  // =========================
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -49,7 +57,9 @@ const Home = () => {
     fetchProducts();
   }, []);
 
+  // =========================
   // OFFER TIMER
+  // =========================
   useEffect(() => {
     const targetTime = new Date();
     targetTime.setHours(targetTime.getHours() + 2);
@@ -70,18 +80,39 @@ const Home = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // =========================
+  // ADD TO CART
+  // =========================
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    toast.success("Added to cart!");
+  };
+
+  // =========================
+  // WISHLIST TOGGLE
+  // =========================
   const handleWishlistToggle = (product) => {
     const productId = product._id || product.id;
 
-    setWishlistItems((prev) =>
-      prev.some((p) => (p._id || p.id) === productId)
-        ? prev.filter((p) => (p._id || p.id) !== productId)
-        : [...prev, product]
+    const exists = wishlistItems.some(
+      (p) => (p._id || p.id) === productId
     );
+
+    if (exists) {
+      removeFromWishlist(productId);
+      toast.success("Removed from wishlist");
+    } else {
+      addToWishlist(product);
+      toast.success("Added to wishlist");
+    }
   };
 
+  // =========================
+  // PRODUCT CARD
+  // =========================
   const ProductCardUI = ({ product }) => {
     const productId = product._id || product.id;
+
     const isWishlisted = wishlistItems.some(
       (p) => (p._id || p.id) === productId
     );
@@ -116,11 +147,29 @@ const Home = () => {
           </span>
         </div>
 
-        <div className="flex justify-center mt-6">
-          <button className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-full flex items-center gap-2 transition">
-            <FaShoppingCart />
+        {/* BUTTONS */}
+        <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full">
+
+          <button
+            onClick={() => handleAddToCart(product)}
+            className="w-full bg-black text-white px-6 py-3 rounded-lg font-medium 
+            hover:bg-gray-800 transition duration-200 shadow-md hover:shadow-lg"
+          >
             Add to Cart
           </button>
+
+          <button
+            onClick={() => handleWishlistToggle(product)}
+            className={`w-full px-6 py-3 rounded-lg border-2 font-medium transition duration-200
+            ${
+              isWishlisted
+                ? "bg-pink-500 text-white border-pink-500 hover:bg-pink-600"
+                : "bg-white text-pink-500 border-pink-500 hover:bg-pink-50"
+            }`}
+          >
+            {isWishlisted ? "Remove Wishlist" : "Add Wishlist"}
+          </button>
+
         </div>
       </div>
     );
@@ -129,7 +178,7 @@ const Home = () => {
   return (
     <div className="bg-gradient-to-r from-green-100 to-blue-200 min-h-screen">
 
-      {/* HERO */}
+      {/* HERO SLIDER */}
       <Swiper modules={[Autoplay]} autoplay={{ delay: 3000 }} loop>
         {heroImages.map((item) => (
           <SwiperSlide key={item.id}>
@@ -144,21 +193,16 @@ const Home = () => {
 
       {/* LATEST PRODUCTS */}
       <div className="max-w-7xl mx-auto px-4 py-14">
-        <h2 className="text-4xl font-bold mb-10">
-          Latest Products
-        </h2>
+        <h2 className="text-4xl font-bold mb-10">Latest Products</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {products.slice(0, 4).map((product) => (
-            <ProductCardUI
-              key={product._id || product.id}
-              product={product}
-            />
+            <ProductCardUI key={product._id || product.id} product={product} />
           ))}
         </div>
       </div>
 
-      {/* WHY CHOOSE SECTION */}
+      {/* WHY CHOOSE */}
       <div className="max-w-7xl mx-auto px-4 py-16 flex flex-col lg:flex-row items-center gap-12">
         <div className="lg:w-1/2">
           <img
@@ -183,7 +227,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* TODAY SPECIAL OFFER */}
+      {/* OFFER TIMER */}
       <section className="bg-gradient-to-r from-purple-900 via-indigo-900 to-gray-900 text-white py-20 text-center">
         <h2 className="text-4xl font-bold text-teal-300 mb-8">
           TODAY'S SPECIAL Offer
@@ -203,20 +247,14 @@ const Home = () => {
 
       {/* FEATURED PRODUCTS */}
       <div className="max-w-7xl mx-auto px-4 py-14">
-        <h2 className="text-4xl font-bold mb-10">
-          Featured Products
-        </h2>
+        <h2 className="text-4xl font-bold mb-10">Featured Products</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {highPriceProducts.map((product) => (
-            <ProductCardUI
-              key={product._id || product.id}
-              product={product}
-            />
+            <ProductCardUI key={product._id || product.id} product={product} />
           ))}
         </div>
       </div>
-
     </div>
   );
 };

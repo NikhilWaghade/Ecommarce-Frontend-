@@ -53,6 +53,7 @@ const ProductDetails = () => {
     if (!selectedSize) {
       toast.error("Please select a size", { autoClose: 1500 });
       return;
+      
     }
 
     addToCart({ ...product, selectedSize });
