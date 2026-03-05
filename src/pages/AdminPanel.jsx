@@ -64,14 +64,14 @@ const AdminPanel = () => {
 
   const fetchProducts = () => {
     axios
-      .get("http://localhost:5000/api/products")
+      .get(`${import.meta.env.VITE_API_URL}/products`)
       .then((res) => setProducts(res.data))
       .catch(() => toast.error("Failed to load products", { autoClose: 1500 }));
   };
 
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/products/${id}`);
       toast.success("Product deleted", { autoClose: 1500 });
       fetchProducts();
     } catch {
@@ -90,127 +90,125 @@ const AdminPanel = () => {
   const handleAdditionalImagesChange = (e) => {
     setAdditionalImages(Array.from(e.target.files));
   };
-  
-const handleAddProduct = async (e) => {
-  e.preventDefault();
 
-  const {
-    name,
-    description,
-    price,
-    category,
-    stock,
-    brand,
-    discountPercent,
-    originalPrice,
-  } = newProduct;
+  const handleAddProduct = async (e) => {
+    e.preventDefault();
 
-  if (!name || !description || !price || !category || !stock) {
-    return toast.error("All required fields must be filled", {
-      autoClose: 1500,
-    });
-  }
+    const {
+      name,
+      description,
+      price,
+      category,
+      stock,
+      brand,
+      discountPercent,
+      originalPrice,
+    } = newProduct;
 
-  const formData = new FormData();
-  formData.append("name", name);
-  formData.append("description", description);
-  formData.append("price", price);
-  formData.append("category", category);
-  formData.append("stock", stock);
-  formData.append("brand", brand || "");
-  formData.append("discountPercent", discountPercent || "0");
-  formData.append("originalPrice", originalPrice || price);
-
-  if (imageFile) formData.append("image", imageFile);
-  additionalImages.forEach((file) => formData.append("images", file));
-
-  setIsSubmitting(true);
-
-  try {
-    if (isEditing && editProductId) {
-      // UPDATE
-      await axios.put(
-        `http://localhost:5000/api/products/${editProductId}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-
-      toast.success("Product updated successfully ✓", {
-        autoClose: 1500,
-      });
-
-      setIsEditing(false);
-      setEditProductId(null);
-      setActiveSection("productList");
-    } else {
-      // CREATE
-      await axios.post(
-        "http://localhost:5000/api/products",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-
-      toast.success("Product added successfully ✓", {
+    if (!name || !description || !price || !category || !stock) {
+      return toast.error("All required fields must be filled", {
         autoClose: 1500,
       });
     }
 
-    // Reset form
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("category", category);
+    formData.append("stock", stock);
+    formData.append("brand", brand || "");
+    formData.append("discountPercent", discountPercent || "0");
+    formData.append("originalPrice", originalPrice || price);
+
+    if (imageFile) formData.append("image", imageFile);
+    additionalImages.forEach((file) => formData.append("images", file));
+
+    setIsSubmitting(true);
+
+    try {
+      if (isEditing && editProductId) {
+        // UPDATE
+        await axios.put(
+          `${import.meta.env.VITE_API_URL}/products/${editProductId}`,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } },
+        );
+
+        toast.success("Product updated successfully ✓", {
+          autoClose: 1500,
+        });
+
+        setIsEditing(false);
+        setEditProductId(null);
+        setActiveSection("productList");
+      } else {
+        // CREATE
+        await axios.post(`${import.meta.env.VITE_API_URL}/products`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        toast.success("Product added successfully ✓", {
+          autoClose: 1500,
+        });
+      }
+
+      // Reset form
+      setNewProduct({
+        name: "",
+        description: "",
+        price: "",
+        category: "",
+        stock: "",
+        brand: "",
+        discountPercent: "",
+        originalPrice: "",
+      });
+
+      setImageFile(null);
+      setAdditionalImages([]);
+
+      fetchProducts();
+    } catch (error) {
+      const errorMsg =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        "Something went wrong";
+
+      toast.error(errorMsg, { autoClose: 3000 });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEdit = (product) => {
+    const productId = product.id; // Supabase int8 id
+
+    if (!productId) {
+      toast.error("Invalid product ID");
+      return;
+    }
+
+    setIsEditing(true);
+    setEditProductId(productId);
+
     setNewProduct({
-      name: "",
-      description: "",
-      price: "",
-      category: "",
-      stock: "",
-      brand: "",
-      discountPercent: "",
-      originalPrice: "",
+      name: product.name ?? "",
+      description: product.description ?? "",
+      price: product.price ?? "",
+      category: product.category ?? "",
+      stock: product.stock ?? "",
+      brand: product.brand ?? "",
+      discountPercent: product.discountPercent ?? "",
+      originalPrice: product.originalPrice ?? "",
     });
 
     setImageFile(null);
     setAdditionalImages([]);
+    setActiveSection("addProduct");
 
-    fetchProducts();
-  } catch (error) {
-    const errorMsg =
-      error.response?.data?.error ||
-      error.response?.data?.message ||
-      "Something went wrong";
-
-    toast.error(errorMsg, { autoClose: 3000 });
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-const handleEdit = (product) => {
-  const productId = product.id; // Supabase int8 id
-
-  if (!productId) {
-    toast.error("Invalid product ID");
-    return;
-  }
-
-  setIsEditing(true);
-  setEditProductId(productId);
-
-  setNewProduct({
-    name: product.name ?? "",
-    description: product.description ?? "",
-    price: product.price ?? "",
-    category: product.category ?? "",
-    stock: product.stock ?? "",
-    brand: product.brand ?? "",
-    discountPercent: product.discountPercent ?? "",
-    originalPrice: product.originalPrice ?? "",
-  });
-
-  setImageFile(null);
-  setAdditionalImages([]);
-  setActiveSection("addProduct");
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleLogout = () => {
     logout();
@@ -670,7 +668,7 @@ const handleEdit = (product) => {
                             <img
                               src={
                                 product.image
-                                  ? `http://localhost:5000/${product.image}`
+                                  ? `${import.meta.env.VITE_API_URL.replace("/api", "")}/${product.image}`
                                   : "https://via.placeholder.com/56x56?text=No+Image"
                               }
                               alt={product.name}

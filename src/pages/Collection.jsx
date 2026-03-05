@@ -3,12 +3,12 @@ import {
   FaSearch,
   FaHeart,
   FaRegHeart,
-  FaShoppingCart,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useWishlist } from "../context/WishlistContext";
 import { motion, AnimatePresence } from "framer-motion";
+import API from "../api/api";
 
 const CollectionPage = () => {
   const [products, setProducts] = useState([]);
@@ -21,17 +21,18 @@ const CollectionPage = () => {
   const { wishlistItems, addToWishlist, removeFromWishlist } = useWishlist();
   const navigate = useNavigate();
 
+  // ✅ FETCH PRODUCTS (Local + Production Safe)
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch("http://localhost:5000/api/products");
-        if (!res.ok) throw new Error("Failed to fetch products");
-        const data = await res.json();
+        const res = await API.get("/products");
+        const data = res.data;
         setProducts(Array.isArray(data) ? data : []);
       } catch (err) {
-        setError(err.message);
+        console.error(err);
+        setError("Failed to fetch products");
         toast.error("Failed to load products");
       } finally {
         setLoading(false);
@@ -68,7 +69,7 @@ const CollectionPage = () => {
 
   const goToWishlistPage = () => navigate("/wishlist");
 
-  // Category Deduplication (Safe)
+  // Unique Categories
   const allCategories = [
     ...new Map(
       products
@@ -160,10 +161,8 @@ const CollectionPage = () => {
           </button>
         </motion.aside>
 
-        {/* RIGHT PRODUCT SECTION */}
+        {/* PRODUCT GRID */}
         <div className="flex-1">
-
-          {/* Search + Sort */}
           <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
             <div className="relative">
               <input
@@ -186,7 +185,6 @@ const CollectionPage = () => {
             </select>
           </div>
 
-          {/* Product Grid */}
           <motion.div
             className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"
             layout
@@ -207,11 +205,7 @@ const CollectionPage = () => {
                   >
                     <Link to={`/product/${itemId}`}>
                       <img
-                        src={
-                          item.image
-                            ? `http://localhost:5000/${item.image}`
-                            : "/placeholder.jpg"
-                        }
+                        src={item.image || "/placeholder.jpg"}
                         alt={item.name}
                         className="w-full h-48 object-cover rounded-md"
                       />

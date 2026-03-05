@@ -13,6 +13,7 @@ import {
   FaBars,
   FaTimes
 } from 'react-icons/fa';
+import logo from "../assets/logo(final).jpg"
 
 const Navbar = () => {
   const { cart } = useCart();
@@ -37,7 +38,7 @@ const Navbar = () => {
         >
           <Link to="/" className="flex items-center space-x-2">
             <motion.img
-              src="src/assets/logo(final).jpg"
+              src={logo}
               alt="Logo"
               className="h-14 w-44 object-cover rounded"
               whileHover={{ rotate: [0, -5, 5, 0] }}
