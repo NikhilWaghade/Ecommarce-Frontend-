@@ -56,9 +56,7 @@ const ProductDetails = () => {
     try {
       const res = await API.get(`/products?category=${category}`);
 
-      const filtered = res.data.filter(
-        (p) => (p._id || p.id) !== id
-      );
+      const filtered = res.data.filter((p) => (p._id || p.id) !== id);
 
       setRelatedProducts(filtered);
     } catch (error) {
@@ -73,9 +71,13 @@ const ProductDetails = () => {
   const getImage = (img) => {
     if (!img) return "/placeholder.jpg";
 
-    return img.startsWith("http")
-      ? img
-      : `${IMAGE_BASE}/${img}`;
+    // Agar already full URL hai to use karo
+    if (img.startsWith("http")) {
+      return img;
+    }
+
+    // Agar sirf uploads path hai to backend URL add karo
+    return `${IMAGE_BASE}/${img}`;
   };
 
   // =========================
@@ -101,7 +103,7 @@ const ProductDetails = () => {
     const productId = product._id || product.id;
 
     const exists = wishlistItems.some(
-      (item) => (item._id || item.id) === productId
+      (item) => (item._id || item.id) === productId,
     );
 
     if (exists) {
@@ -114,7 +116,7 @@ const ProductDetails = () => {
   const isWishlisted =
     product &&
     wishlistItems.some(
-      (item) => (item._id || item.id) === (product._id || product.id)
+      (item) => (item._id || item.id) === (product._id || product.id),
     );
 
   // =========================
@@ -153,22 +155,15 @@ const ProductDetails = () => {
   };
 
   if (!product) {
-    return (
-      <div className="p-10 text-center text-lg">
-        Loading product...
-      </div>
-    );
+    return <div className="p-10 text-center text-lg">Loading product...</div>;
   }
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-
       {/* PRODUCT SECTION */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
         {/* IMAGES */}
         <div>
-
           {mainImage && (
             <img
               src={getImage(mainImage)}
@@ -178,7 +173,6 @@ const ProductDetails = () => {
           )}
 
           <div className="flex gap-3 mt-4 overflow-x-auto">
-
             {product.image && (
               <img
                 src={getImage(product.image)}
@@ -197,17 +191,13 @@ const ProductDetails = () => {
                 className="w-20 h-20 object-cover rounded cursor-pointer border"
               />
             ))}
-
           </div>
         </div>
 
         {/* PRODUCT INFO */}
         <div className="flex flex-col gap-4">
-
           <div className="flex justify-between items-start">
-            <h1 className="text-3xl font-bold">
-              {product.name}
-            </h1>
+            <h1 className="text-3xl font-bold">{product.name}</h1>
 
             <button onClick={handleWishlistToggle}>
               {isWishlisted ? (
@@ -218,9 +208,7 @@ const ProductDetails = () => {
             </button>
           </div>
 
-          <p className="text-gray-600">
-            {product.description}
-          </p>
+          <p className="text-gray-600">{product.description}</p>
 
           <div className="text-2xl font-bold text-green-600">
             ₹{product.price}
@@ -249,7 +237,6 @@ const ProductDetails = () => {
 
           {/* BUTTONS */}
           <div className="flex gap-4 mt-4">
-
             <button
               onClick={handleAddToCart}
               className="flex-1 bg-black text-white py-3 rounded-lg hover:bg-gray-800"
@@ -267,18 +254,13 @@ const ProductDetails = () => {
             >
               Wishlist
             </button>
-
           </div>
-
         </div>
       </div>
 
       {/* REVIEWS */}
       <div className="mt-12">
-
-        <h2 className="text-2xl font-bold mb-4">
-          Customer Reviews
-        </h2>
+        <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
 
         {product.reviews?.length ? (
           product.reviews.map((review, index) => (
@@ -293,11 +275,7 @@ const ProductDetails = () => {
         )}
 
         {/* REVIEW FORM */}
-        <form
-          onSubmit={handleReviewSubmit}
-          className="mt-6 space-y-3"
-        >
-
+        <form onSubmit={handleReviewSubmit} className="mt-6 space-y-3">
           <input
             type="text"
             placeholder="Your Name"
@@ -312,8 +290,10 @@ const ProductDetails = () => {
             className="border p-2 rounded"
           >
             <option value="0">Rating</option>
-            {[1,2,3,4,5].map((r)=>(
-              <option key={r} value={r}>{r} ★</option>
+            {[1, 2, 3, 4, 5].map((r) => (
+              <option key={r} value={r}>
+                {r} ★
+              </option>
             ))}
           </select>
 
@@ -331,29 +311,19 @@ const ProductDetails = () => {
           >
             {isSubmittingReview ? "Submitting..." : "Submit Review"}
           </button>
-
         </form>
-
       </div>
 
       {/* RELATED PRODUCTS */}
       <div className="mt-14">
-
-        <h2 className="text-2xl font-bold mb-6">
-          Related Products
-        </h2>
+        <h2 className="text-2xl font-bold mb-6">Related Products</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {relatedProducts.map((prod) => (
-            <ProductCard
-              key={prod._id || prod.id}
-              product={prod}
-            />
+            <ProductCard key={prod._id || prod.id} product={prod} />
           ))}
         </div>
-
       </div>
-
     </div>
   );
 };
