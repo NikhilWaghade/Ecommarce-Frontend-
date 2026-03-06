@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 import API from "../api/api";
 
 import { useCart } from "../context/CartContext";
@@ -13,6 +14,10 @@ import { Autoplay } from "swiper/modules";
 import hero1 from "../assets/hero-image1.jpg";
 import hero2 from "../assets/hero-image2.jpg";
 import hero3 from "../assets/hero-image3.jpg";
+
+const IMAGE_BASE = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL.replace("/api", "")
+  : "http://localhost:5000";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -31,6 +36,17 @@ const Home = () => {
     { id: "hero2", img: hero2 },
     { id: "hero3", img: hero3 },
   ];
+
+  // =========================
+  // IMAGE HELPER
+  // =========================
+  const getImage = (img) => {
+    if (!img) return "/placeholder.jpg";
+
+    if (img.startsWith("http")) return img;
+
+    return `${IMAGE_BASE}/${img}`;
+  };
 
   // =========================
   // FETCH PRODUCTS
@@ -58,7 +74,7 @@ const Home = () => {
   }, []);
 
   // =========================
-  // OFFER TIMER
+  // TIMER
   // =========================
   useEffect(() => {
     const targetTime = new Date();
@@ -81,7 +97,7 @@ const Home = () => {
   }, []);
 
   // =========================
-  // ADD TO CART
+  // CART
   // =========================
   const handleAddToCart = (product) => {
     addToCart(product);
@@ -89,7 +105,7 @@ const Home = () => {
   };
 
   // =========================
-  // WISHLIST TOGGLE
+  // WISHLIST
   // =========================
   const handleWishlistToggle = (product) => {
     const productId = product._id || product.id;
@@ -117,8 +133,12 @@ const Home = () => {
       (p) => (p._id || p.id) === productId
     );
 
+    const productImage = getImage(product.images?.[0] || product.image);
+
     return (
       <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 p-6 relative">
+
+        {/* WISHLIST */}
         <button
           onClick={() => handleWishlistToggle(product)}
           className="absolute top-4 right-4 bg-white p-2 rounded-full shadow"
@@ -128,24 +148,28 @@ const Home = () => {
           />
         </button>
 
-        <div className="w-full h-48 flex items-center justify-center">
-          <img
-            src={product.image || "/placeholder.jpg"}
-            alt={product.name}
-            loading="lazy"
-            className="max-h-full object-contain"
-          />
-        </div>
+        {/* PRODUCT LINK */}
+        <Link to={`/product/${productId}`}>
 
-        <h3 className="text-center font-semibold mt-6 text-gray-800">
-          {product.name}
-        </h3>
+          <div className="w-full h-48 flex items-center justify-center">
+            <img
+              src={productImage}
+              alt={product.name}
+              className="max-h-full object-contain"
+            />
+          </div>
 
-        <div className="flex justify-center mt-3">
-          <span className="bg-yellow-300 px-4 py-1 rounded-md font-bold text-black">
-            ₹{product.price}
-          </span>
-        </div>
+          <h3 className="text-center font-semibold mt-6 text-gray-800">
+            {product.name}
+          </h3>
+
+          <div className="flex justify-center mt-3">
+            <span className="bg-yellow-300 px-4 py-1 rounded-md font-bold text-black">
+              ₹{product.price}
+            </span>
+          </div>
+
+        </Link>
 
         {/* BUTTONS */}
         <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full">
@@ -153,18 +177,18 @@ const Home = () => {
           <button
             onClick={() => handleAddToCart(product)}
             className="w-full bg-black text-white px-6 py-3 rounded-lg font-medium 
-            hover:bg-gray-800 transition duration-200 shadow-md hover:shadow-lg"
+            hover:bg-gray-800 transition"
           >
             Add to Cart
           </button>
 
           <button
             onClick={() => handleWishlistToggle(product)}
-            className={`w-full px-6 py-3 rounded-lg border-2 font-medium transition duration-200
+            className={`w-full px-6 py-3 rounded-lg border-2 font-medium
             ${
               isWishlisted
-                ? "bg-pink-500 text-white border-pink-500 hover:bg-pink-600"
-                : "bg-white text-pink-500 border-pink-500 hover:bg-pink-50"
+                ? "bg-pink-500 text-white border-pink-500"
+                : "bg-white text-pink-500 border-pink-500"
             }`}
           >
             {isWishlisted ? "Remove Wishlist" : "Add Wishlist"}
@@ -178,7 +202,7 @@ const Home = () => {
   return (
     <div className="bg-gradient-to-r from-green-100 to-blue-200 min-h-screen">
 
-      {/* HERO SLIDER */}
+      {/* HERO */}
       <Swiper modules={[Autoplay]} autoplay={{ delay: 3000 }} loop>
         {heroImages.map((item) => (
           <SwiperSlide key={item.id}>
@@ -199,31 +223,6 @@ const Home = () => {
           {products.slice(0, 4).map((product) => (
             <ProductCardUI key={product._id || product.id} product={product} />
           ))}
-        </div>
-      </div>
-
-      {/* WHY CHOOSE */}
-      <div className="max-w-7xl mx-auto px-4 py-16 flex flex-col lg:flex-row items-center gap-12">
-        <div className="lg:w-1/2">
-          <img
-            src="https://img.freepik.com/free-vector/running-sport-shoes-illustration_1284-17528.jpg"
-            alt="Shoes"
-            className="rounded-2xl shadow-lg"
-          />
-        </div>
-
-        <div className="lg:w-1/2 space-y-5">
-          <h2 className="text-4xl font-bold text-pink-600">
-            Why Choose Our Shoes?
-          </h2>
-
-          <p className="text-gray-700">
-            Premium materials, breathable comfort, and long-lasting durability.
-          </p>
-
-          <p className="text-gray-600">
-            Designed for runners, workers, and everyday lifestyle.
-          </p>
         </div>
       </div>
 
@@ -255,6 +254,7 @@ const Home = () => {
           ))}
         </div>
       </div>
+
     </div>
   );
 };
